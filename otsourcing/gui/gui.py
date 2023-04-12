@@ -1,4 +1,5 @@
-from queue import  Queue, Empty
+from ast import List
+from queue import Queue, Empty
 from typing import Set
 from pynput import keyboard
 import tkinter as tk
@@ -36,31 +37,68 @@ def update_output_command_queue(root, text_area, output_command_queue: Queue):
         root, text_area, output_command_queue))
 
 
+class MultiQueueBroker:
+    def __init__(self, queues) -> None:
+        self.queues = queues
+
+    def put(self, *args, **kwargs):
+        for queue in self.queues:
+            queue.put(*args, **kwargs)
+
+    def put_nowait(self, *args, **kwargs):
+        for queue in self.queues:
+            queue.put_nowait(*args, **kwargs)
+
+
 def start_gui(process_pool, subprocess_cls):
     manager = Manager()
-    input_command_queue = manager.Queue(10)
+    input_command_queue_heal = manager.Queue(10)
+    input_command_queue_cavebot = manager.Queue(10)
+    input_command_queue_attack = manager.Queue(10)
     output_command_queue = manager.Queue(10)
-    hotkeys = Hotkeys(input_command_queue)
+    input_queues = MultiQueueBroker(
+        [input_command_queue_heal, input_command_queue_attack, input_command_queue_cavebot])
+    hotkeys = Hotkeys(input_queues)
     hotkeys.run()
-    subprocess_cls = subprocess_cls(input_command_queue, output_command_queue)
+    subprocess_heal = subprocess_cls(
+        "heal", input_command_queue_heal, output_command_queue)
+    subprocess_cavebot = subprocess_cls(
+        "cb", input_command_queue_cavebot, output_command_queue)
+    subprocess_attack = subprocess_cls(
+        "atk", input_command_queue_attack, output_command_queue)
     root = tk.Tk()
     frm = tk.ttk.Frame(root, padding=10)
     frm.grid()
-    tk.ttk.Button(frm, text="Start", command=lambda: subprocess_run(process_pool,
-        subprocess_cls.run)).grid(column=0, row=0)
-    tk.ttk.Button(frm, text="Play/Pause", command=lambda: input_command_queue.put(
-        keyboard.Key.pause)).grid(column=1, row=0)
+    tk.ttk.Button(frm, text="Start Heal",
+                  command=lambda: subprocess_run(
+                      process_pool,
+                      subprocess_heal.run_healing
+                  )).grid(column=0, row=0)
+    tk.ttk.Button(frm, text="Start Atk",
+                  command=lambda: subprocess_run(
+                      process_pool,
+                      subprocess_attack.run_attack
+                  )).grid(column=1, row=0)
+    tk.ttk.Button(frm, text="Start Cb",
+                  command=lambda: subprocess_run(
+                      process_pool,
+                      subprocess_cavebot.run_cavebot
+                  )).grid(column=2, row=0)
+    tk.ttk.Button(frm, text="Play/Pause",
+                  command=lambda: input_queues.put(
+                      keyboard.Key.pause)).grid(column=0, row=1)
 
-    tk.ttk.Button(frm, text="Quit", command=lambda: exit(process_pool,
-        root)).grid(column=2, row=0)
+    tk.ttk.Button(frm, text="Quit",
+                  command=lambda: exit(process_pool,
+                                       root)).grid(column=1, row=1)
 
     tk.ttk.Label(root,
                  text="Output Command Queue",
                  font=("Times New Roman", 15),
                  foreground="black").grid(column=0,
-                                          row=1)
+                                          row=3)
     text_area = st.ScrolledText(root,
-                                width=30,
+                                width=25,
                                 height=8,
                                 font=("Times New Roman",
                                       15))

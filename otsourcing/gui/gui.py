@@ -5,6 +5,7 @@ from pynput import keyboard
 import tkinter as tk
 import tkinter.scrolledtext as st
 from multiprocessing import Manager, Process
+from otsourcing.app import OtSorcing
 
 from otsourcing.services.hotkeys import Hotkeys
 
@@ -50,7 +51,7 @@ class MultiQueueBroker:
             queue.put_nowait(*args, **kwargs)
 
 
-def start_gui(process_pool, subprocess_cls):
+def start_gui(process_pool, ot_sorcing: OtSorcing):
     manager = Manager()
     input_command_queue_heal = manager.Queue(10)
     input_command_queue_cavebot = manager.Queue(10)
@@ -60,29 +61,30 @@ def start_gui(process_pool, subprocess_cls):
         [input_command_queue_heal, input_command_queue_attack, input_command_queue_cavebot])
     hotkeys = Hotkeys(input_queues)
     hotkeys.run()
-    subprocess_heal = subprocess_cls(
+    heal_app = ot_sorcing.healing_app(
         "heal", input_command_queue_heal, output_command_queue)
-    subprocess_cavebot = subprocess_cls(
+    cavebot_app = ot_sorcing.cavebot_app(
         "cb", input_command_queue_cavebot, output_command_queue)
-    subprocess_attack = subprocess_cls(
+    attack_app = ot_sorcing.attack_app(
         "atk", input_command_queue_attack, output_command_queue)
+
     root = tk.Tk()
     frm = tk.ttk.Frame(root, padding=10)
     frm.grid()
     tk.ttk.Button(frm, text="Start Heal",
                   command=lambda: subprocess_run(
                       process_pool,
-                      subprocess_heal.run_healing
+                      heal_app.run
                   )).grid(column=0, row=0)
     tk.ttk.Button(frm, text="Start Atk",
                   command=lambda: subprocess_run(
                       process_pool,
-                      subprocess_attack.run_attack
+                      attack_app.run
                   )).grid(column=1, row=0)
     tk.ttk.Button(frm, text="Start Cb",
                   command=lambda: subprocess_run(
                       process_pool,
-                      subprocess_cavebot.run_cavebot
+                      cavebot_app.run
                   )).grid(column=2, row=0)
     tk.ttk.Button(frm, text="Play/Pause",
                   command=lambda: input_queues.put(

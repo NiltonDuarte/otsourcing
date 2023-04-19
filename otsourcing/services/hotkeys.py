@@ -41,6 +41,7 @@ class HotkeyFunctions:
 
 
 class Hotkeys:
+    listening_keys = ('r', 'd', 's')
 
     def __init__(self, command_queue: Queue) -> None:
         self.command_queue = command_queue
@@ -60,7 +61,7 @@ class Hotkeys:
             return
         if not isinstance(key, keyboard.KeyCode):
             return
-        if key.char in ('r', 'd'):
+        if key.char in self.listening_keys:
             self.send_to_command_queue(key)
 
     def on_release(self, key):

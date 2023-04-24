@@ -1,7 +1,10 @@
 import pyautogui
+import yaml
 from pynput import keyboard
 from dataclasses import dataclass
 from queue import Queue, Empty, Full
+from otsourcing.data_model.attack_rotation import SpellRotation
+from otsourcing.data_model.command_message import StringMessage, ToggleAtkMessage, TogglePauseMessage
 from otsourcing.services.cavebot.cavebot import CavebotService
 
 from otsourcing.services.hotkeys import HotkeyFunctions
@@ -9,6 +12,7 @@ from otsourcing.logger import logger
 from otsourcing.services.heal import HealService
 from otsourcing.services.mana import ManaService
 from otsourcing.services.attack import AttackService
+from otsourcing.settings import user_resources_folder
 from cavebot.waypoints.three_marks import marks_used
 
 
@@ -17,16 +21,18 @@ class BaseApp:
         self.name = name
         self.input_command_queue = input_command_queue
         self.output_command_queue = output_command_queue
-        self.paused = True
+        self.resumed = False
 
     def toggle_pause(self):
-        self.paused = not self.paused
-        self.send_output(f"Pause={self.paused}")
+        self.resumed = not self.resumed
+        cmd = TogglePauseMessage(self.name, self.resumed)
+        self.send_output(cmd)
 
-    def send_output(self, message):
-        fmt_message = f"{self.name}: {message}"
+    def send_output(self, cmd):
+        if isinstance(cmd, str):
+            cmd = StringMessage(self.name, message=cmd)
         try:
-            self.output_command_queue.put_nowait(fmt_message)
+            self.output_command_queue.put_nowait(cmd)
         except Full:
             logger.error("Output queue full")
 
@@ -37,7 +43,7 @@ class BaseApp:
                 if key == keyboard.Key.pause:
                     HotkeyFunctions.pause(self)
                     continue
-                if self.paused:
+                if not self.resumed:
                     continue
                 if isinstance(key, keyboard.KeyCode):
                     fn = hotkey_map.get(key.char)
@@ -70,7 +76,7 @@ class HealingApp(BaseApp):
 
         while True:
             self.queue_handler()
-            if self.paused:
+            if not self.resumed:
                 pyautogui.sleep(1)
                 continue
 
@@ -80,7 +86,7 @@ class HealingApp(BaseApp):
             has_filled, message = self.mana_service.fill() or (False, None)
             if has_filled and message:
                 self.send_output(message)
-            pyautogui.sleep(0.1)
+            pyautogui.sleep(0.05)
 
 
 class AttackApp(BaseApp):
@@ -91,7 +97,8 @@ class AttackApp(BaseApp):
 
     def toggle_atk(self):
         self.atk_enabled = not self.atk_enabled
-        self.send_output(f"Atk Enabled={self.atk_enabled}")
+        cmd = ToggleAtkMessage(self.name, self.atk_enabled)
+        self.send_output(cmd)
 
     def queue_handler(self):
         hotkey_map = {
@@ -100,18 +107,24 @@ class AttackApp(BaseApp):
         super()._queue_handler(hotkey_map)
 
     def run(self):
+        with open(f"{user_resources_folder}/attack/default.yaml") as f:
+            user_input = yaml.safe_load(f)
+        spell_rotation = SpellRotation.load_from_dict(
+            user_input["spell_rotation"])
         self.send_output("Setting up attack.")
-        attack_service = AttackService()
+        attack_service = AttackService(spell_rotation)
         self.send_output("Initializing attack.")
         while True:
             self.queue_handler()
-            if self.paused:
+            if not self.resumed:
                 pyautogui.sleep(1)
                 continue
             if self.atk_enabled:
-                attack_service.attack()
+                has_attacked = attack_service.attack()
             else:
                 pyautogui.sleep(1)
+                continue
+            pyautogui.sleep(0.1)
 
 
 class CavebotApp(BaseApp):
@@ -128,7 +141,7 @@ class CavebotApp(BaseApp):
     def wait_if_paused(self):
         while True:
             self.queue_handler()
-            if not self.paused:
+            if self.resumed:
                 return
             pyautogui.sleep(1)
 

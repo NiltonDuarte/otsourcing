@@ -1,25 +1,24 @@
 import time
 import random
 import pyautogui
+from otsourcing.gui.window_utils import only_if_window_focused
+from otsourcing.data_model.attack_rotation import SpellRotation
+from otsourcing.data_model.attack import AttackSpell
 
 
 class AttackService:
-    spell_hk = '6'
-    rune_hk = '8'
-    spell_rotation_map = {
-        'spell': {'hk': 'f4', 'next': 'rune'},
-        'rune': {'hk': 'f5', 'next': 'spell'},
-    }
-
-    def __init__(self):
+    def __init__(self, spell_rotation: SpellRotation):
         self.timer = time.perf_counter()
-        self.next_atk = 'spell'
+        self.spell_rotation = spell_rotation
 
+    @only_if_window_focused
     def attack(self):
-        current_timer = time.perf_counter()
-        diff = current_timer - self.timer
-        if diff > (2 + random.random()/5):
-            spell_rotation = self.spell_rotation_map[self.next_atk]
-            pyautogui.press(spell_rotation['hk'])
-            self.next_atk = spell_rotation['next']
-            self.timer = time.perf_counter()
+        if not self.spell_rotation.is_group_available():
+            return False
+        attack_spell = self.spell_rotation.get_next_spell()
+        if attack_spell:
+            pyautogui.press(attack_spell.hotkey)
+            attack_spell.reset_last_time_used()
+            self.spell_rotation.reset_last_time_used()
+            return True
+        return False

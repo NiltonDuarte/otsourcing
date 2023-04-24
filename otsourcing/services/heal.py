@@ -1,5 +1,6 @@
 import pyautogui
 import pyscreeze
+import time
 from pyscreeze import RGB
 from otsourcing.data_model.health import HealthBar
 from otsourcing.data_model.amulet import Amulet
@@ -14,9 +15,15 @@ class HealService:
     is_full_ssa = True
     ssa_enable = False
     ssa_equiped = False
+    heal_cd = 1
+    ssa_cd = 0.22
+
+    def __init__(self):
+        self.timer = time.perf_counter()
 
     @only_if_window_focused
     def heal(self):
+        current_timer = time.perf_counter()
         health_bar_pot_color = RGB(
             *pyscreeze.pixel(self.health_bar.pot_x, self.health_bar.y))
         if is_gray(health_bar_pot_color):
@@ -27,12 +34,16 @@ class HealService:
 
         health_bar_ssa_color = RGB(
             *pyscreeze.pixel(self.health_bar.ssa_x, self.health_bar.y))
+        diff = current_timer - self.timer
         if self.is_full_ssa:
-            self.equip_ssa()
+            if diff > self.ssa_cd:
+                self.equip_ssa()
+                self.timer = time.perf_counter()
         elif is_gray(health_bar_ssa_color) and self.ssa_enable:
-            pyautogui.press(self.spell_heal_key)
-            self.equip_ssa()
-            return True, "SSA Up"
+            if diff > self.ssa_cd:
+                pyautogui.press(self.spell_heal_key)
+                self.equip_ssa()
+                self.timer = time.perf_counter()
         else:
             self.equip_default_amulet()
         health_bar_spell_color = RGB(

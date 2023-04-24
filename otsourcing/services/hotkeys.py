@@ -22,7 +22,7 @@ class HotkeyFunctions:
     @staticmethod
     @only_if_window_focused
     def pickup_surrouding_loot(pago_macro: 'PagoMacro'):
-        if pago_macro.paused:
+        if not pago_macro.resumed:
             return
         with pyautogui.hold('shift'):
             for position in HotkeyFunctions.surrouding_sqms.values():
@@ -35,7 +35,7 @@ class HotkeyFunctions:
 
     @staticmethod
     def toggle_atk(pago_macro: 'PagoMacro'):
-        if pago_macro.paused:
+        if not pago_macro.resumed:
             return
         pago_macro.toggle_atk()
 

@@ -1,0 +1,7 @@
+spell_rotation:
+  - spell:
+      hotkey: f4
+      cooldown: 4
+  - spell:
+      hotkey: f5
+      cooldown: 4  

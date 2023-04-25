@@ -1,9 +1,7 @@
 import time
-import random
 import pyautogui
 from otsourcing.gui.window_utils import only_if_window_focused
 from otsourcing.data_model.attack_rotation import SpellRotation
-from otsourcing.data_model.attack import AttackSpell
 
 
 class AttackService:

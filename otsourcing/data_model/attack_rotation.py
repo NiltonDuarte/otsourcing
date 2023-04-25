@@ -7,7 +7,7 @@ from otsourcing.data_model.attack import AttackSpell
 @dataclass
 class SpellRotation:
     rotation: List[AttackSpell]
-    group_cooldown: int = 2
+    group_cooldown: int = 2.05
     last_time_used: int = 0
 
     def reset_last_time_used(self):

@@ -15,8 +15,8 @@ class HealService:
     is_full_ssa = True
     ssa_enable = False
     ssa_equiped = False
-    heal_cd = 1
-    ssa_cd = 0.22
+    heal_cd = 1.05
+    ssa_cd = 0.3
 
     def __init__(self):
         self.timer = time.perf_counter()

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from queue import Queue, Empty, Full
 from otsourcing.data_model.attack_rotation import SpellRotation
 from otsourcing.data_model.command_message import StringMessage, ToggleAtkMessage, TogglePauseMessage
+from otsourcing.services.battle import BattleServisce
 from otsourcing.services.cavebot.cavebot import CavebotService
 
 from otsourcing.services.hotkeys import HotkeyFunctions
@@ -119,11 +120,13 @@ class AttackApp(BaseApp):
             if not self.resumed:
                 pyautogui.sleep(1)
                 continue
-            if self.atk_enabled:
-                has_attacked = attack_service.attack()
-            else:
+            if not self.atk_enabled:
                 pyautogui.sleep(1)
                 continue
+            if BattleServisce.is_battle_empty():
+                pyautogui.sleep(1)
+                continue
+            has_attacked = attack_service.attack()
             pyautogui.sleep(0.1)
 
 

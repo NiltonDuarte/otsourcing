@@ -5,12 +5,13 @@ from otsourcing.data_model.attack import AttackSpell
 
 
 @dataclass
-class SpellRotation:
+class AttackRotation:
     rotation: List[AttackSpell]
-    group_cooldown: int = 2.05
+    group_cooldown: int = 2
     last_time_used: int = 0
 
-    def reset_last_time_used(self):
+    def reset_last_time_used(self, attack_spell: AttackSpell):
+        attack_spell.reset_last_time_used()
         self.last_time_used = time.perf_counter()
 
     def is_group_available(self):
@@ -20,7 +21,7 @@ class SpellRotation:
             return True
         return False
 
-    def get_next_spell(self):
+    def get_next_attack(self):
         for attack_spell in self.rotation:
             if attack_spell.is_spell_available():
                 return attack_spell
@@ -30,6 +31,6 @@ class SpellRotation:
         rotation = []
         for attack_spell_input in input_dict:
             attack_spell = AttackSpell.load_from_dict(
-                attack_spell_input["spell"])
+                attack_spell_input["attack"])
             rotation.append(attack_spell)
         return cls(rotation=rotation)

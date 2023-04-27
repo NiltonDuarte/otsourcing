@@ -1,0 +1,13 @@
+attack_rotation:
+  - attack:
+      hotkey: f4
+      cooldown: 6
+  - attack:
+      hotkey: f5
+      cooldown: 4
+  - attack:
+      hotkey: f6
+      cooldown: 8
+  - attack:
+      hotkey: f7
+      cooldown: 2

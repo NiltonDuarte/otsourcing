@@ -3,7 +3,7 @@ import yaml
 from pynput import keyboard
 from dataclasses import dataclass
 from queue import Queue, Empty, Full
-from otsourcing.data_model.attack_rotation import SpellRotation
+from otsourcing.data_model.attack_rotation import AttackRotation
 from otsourcing.data_model.command_message import StringMessage, ToggleAtkMessage, TogglePauseMessage
 from otsourcing.services.battle import BattleServisce
 from otsourcing.services.cavebot.cavebot import CavebotService
@@ -96,6 +96,12 @@ class AttackApp(BaseApp):
         super().__init__(name, input_command_queue, output_command_queue)
         self.atk_enabled = False
 
+    def set_rotation(self, rotation_file_name):
+        with open(f"{user_resources_folder}/attack/{rotation_file_name}.yaml") as f:
+            user_input = yaml.safe_load(f)
+        self.attack_rotation = AttackRotation.load_from_dict(
+            user_input["attack_rotation"])
+
     def toggle_atk(self):
         self.atk_enabled = not self.atk_enabled
         cmd = ToggleAtkMessage(self.name, self.atk_enabled)
@@ -108,12 +114,8 @@ class AttackApp(BaseApp):
         super()._queue_handler(hotkey_map)
 
     def run(self):
-        with open(f"{user_resources_folder}/attack/default.yaml") as f:
-            user_input = yaml.safe_load(f)
-        spell_rotation = SpellRotation.load_from_dict(
-            user_input["spell_rotation"])
         self.send_output("Setting up attack.")
-        attack_service = AttackService(spell_rotation)
+        attack_service = AttackService(self.attack_rotation)
         self.send_output("Initializing attack.")
         while True:
             self.queue_handler()

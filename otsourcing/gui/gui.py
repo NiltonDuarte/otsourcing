@@ -6,9 +6,13 @@ from pynput import keyboard
 import tkinter as tk
 import tkinter.scrolledtext as st
 from multiprocessing import Manager, Process
-from otsourcing.app import OtSorcing
-from otsourcing.data_model.command_message import CommandType
+from pathlib import Path
 
+import yaml
+from otsourcing.app import OtSorcing
+from otsourcing.data_model.attack_rotation import AttackRotation
+from otsourcing.data_model.command_message import CommandType
+from otsourcing.settings import user_resources_folder
 from otsourcing.services.hotkeys import Hotkeys
 
 
@@ -115,21 +119,12 @@ def start_gui(process_pool, ot_sorcing: OtSorcing):
     frm = tk.ttk.Frame(root, padding=10)
     frm.grid()
     style = tk.ttk.Style()
-    tk.ttk.Button(frm, text="Start Heal",
-                  command=lambda: subprocess_run(
-                      process_pool,
-                      heal_app.run
-                  )).grid(column=0, row=0)
-    tk.ttk.Button(frm, text="Start Atk",
-                  command=lambda: subprocess_run(
-                      process_pool,
-                      attack_app.run
-                  )).grid(column=1, row=0)
-    tk.ttk.Button(frm, text="Start Cb",
-                  command=lambda: subprocess_run(
-                      process_pool,
-                      cavebot_app.run
-                  )).grid(column=2, row=0)
+
+    atk_selected_option = tk.StringVar()
+    create_atk_selection_menu(frm, atk_selected_option)
+
+    create_app_buttons(process_pool, heal_app, cavebot_app,
+                       attack_app, frm, atk_selected_option)
 
     create_toggle_pause_btn(frm, style, input_queues)
     create_toggle_atk_btn(frm, style, input_queues)
@@ -141,7 +136,7 @@ def start_gui(process_pool, ot_sorcing: OtSorcing):
                  text="Output Command Queue",
                  font=("Times New Roman", 15),
                  foreground="black").grid(column=0,
-                                          row=3)
+                                          row=4)
     text_area = st.ScrolledText(root,
                                 width=30,
                                 height=4,
@@ -154,3 +149,39 @@ def start_gui(process_pool, ot_sorcing: OtSorcing):
     text_area.configure(state='disabled')
     root.wm_attributes("-topmost", 1)
     root.mainloop()
+
+
+def create_atk_selection_menu(frm, atk_selected_option):
+    atk_selected_option.set("default")
+    mbtn = tk.ttk.Menubutton(frm, textvariable=atk_selected_option)
+    mbtn.grid(column=0,
+              row=3)
+
+    menu = tk.Menu(mbtn, tearoff=0)
+    for p in Path(f"{user_resources_folder}/attack").iterdir():
+        if p.is_file():
+            name = p.stem
+            menu.add_radiobutton(label=name, value=name,
+                                 variable=atk_selected_option)
+    mbtn["menu"] = menu
+
+
+def create_app_buttons(process_pool, heal_app, cavebot_app, attack_app, frm, atk_selected_option):
+    def start_atk_app():
+        attack_app.set_rotation(atk_selected_option.get())
+        subprocess_run(
+            process_pool,
+            attack_app.run
+        )
+    tk.ttk.Button(frm, text="Start Heal",
+                  command=lambda: subprocess_run(
+                      process_pool,
+                      heal_app.run
+                  )).grid(column=0, row=0)
+    tk.ttk.Button(frm, text="Start Atk",
+                  command=start_atk_app).grid(column=1, row=0)
+    tk.ttk.Button(frm, text="Start Cb",
+                  command=lambda: subprocess_run(
+                      process_pool,
+                      cavebot_app.run
+                  )).grid(column=2, row=0)

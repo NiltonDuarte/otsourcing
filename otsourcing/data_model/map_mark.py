@@ -4,7 +4,7 @@ from typing import Callable
 
 
 def fail(mark):
-    raise RuntimeError(f'img not found {mark=}')
+    raise RuntimeError(f"img not found {mark=}")
 
 
 def skip(mark):  # no qa

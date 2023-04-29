@@ -16,6 +16,6 @@ class AttackService:
         attack_spell = self.attack_rotation.get_next_attack()
         if attack_spell:
             pyautogui.press(attack_spell.hotkey)
-            self.attack_rotation.reset_last_time_used()
+            self.attack_rotation.reset_last_time_used(attack_spell)
             return True
         return False

@@ -1,5 +1,5 @@
 heal_config:
-  name: pot_low_health_high_health_ssa
+  name: pot_low_health_full_ssa
   health_bar:
     y: 34
     pot_x: 255
@@ -18,7 +18,7 @@ heal_config:
     pot_heal_key: f2
     ssa_key: f6
     default_amulet_key: f7
-    is_full_ssa: False
+    is_full_ssa: True
     heal_cd: 1
     ssa_cd: 0.2
   mana_service:

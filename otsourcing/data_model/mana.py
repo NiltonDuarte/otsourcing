@@ -1,4 +1,12 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class ManaBar:
-    y = 31
-    pot_x = 1300
-    high_mana_pot_x = 950
+    y: int
+    pot_x: int
+    high_mana_pot_x: int
+
+    @classmethod
+    def load_from_dict(cls, input_dict):
+        return cls(**input_dict)

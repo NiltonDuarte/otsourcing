@@ -1,8 +1,7 @@
 import time
-
+import pyautogui
 from otsourcing.services.cavebot.battle import wait_to_empty_battle
 from otsourcing.services.cavebot.walk import click_on_mark, click_mark_with_retry
-import pyautogui
 
 
 class CavebotService:

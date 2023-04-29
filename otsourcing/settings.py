@@ -1,9 +1,9 @@
 from pathlib import Path
 
-resources_folder = str(Path(__file__).parent/'resources')
-WINDOW_TITLE_IMG = f'{resources_folder}/window_title.png'
-user_resources_folder = str(Path(__file__).parent.parent/'resources')
-APP_NAME = 'otsourcing'
+resources_folder = str(Path(__file__).parent / "resources")
+WINDOW_TITLE_IMG = f"{resources_folder}/window_title.png"
+user_resources_folder = str(Path(__file__).parent.parent / "resources")
+APP_NAME = "otsourcing"
 
 creature_icon_pos = (75, 46)
 

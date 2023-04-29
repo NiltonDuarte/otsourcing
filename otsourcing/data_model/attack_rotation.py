@@ -25,12 +25,12 @@ class AttackRotation:
         for attack_spell in self.rotation:
             if attack_spell.is_spell_available():
                 return attack_spell
+        return None
 
     @classmethod
     def load_from_dict(cls, input_dict):
         rotation = []
         for attack_spell_input in input_dict:
-            attack_spell = AttackSpell.load_from_dict(
-                attack_spell_input["attack"])
+            attack_spell = AttackSpell.load_from_dict(attack_spell_input["attack"])
             rotation.append(attack_spell)
         return cls(rotation=rotation)

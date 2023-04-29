@@ -11,7 +11,6 @@ class CommandType(Enum):
 @dataclass
 class CommandMessage:
     app: str
-    # type: CommandType
 
 
 @dataclass

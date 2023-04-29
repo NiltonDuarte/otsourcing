@@ -12,7 +12,7 @@ class AttackSpell:
     def is_spell_available(self):
         current_timer = time.perf_counter()
         diff = current_timer - self.last_time_used
-        if diff > (self.cooldown + random.random()/5):
+        if diff > (self.cooldown + random.random() / 5):
             return True
         return False
 

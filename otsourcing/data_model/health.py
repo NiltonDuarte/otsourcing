@@ -1,6 +1,13 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class HealthBar:
-    y = 34
-    # pot_x = 255
-    pot_x = 627
-    spell_x = 860
-    ssa_x = 710
+    y: int
+    pot_x: int
+    spell_x: int
+    ssa_x: int
+
+    @classmethod
+    def load_from_dict(cls, input_dict):
+        return cls(**input_dict)

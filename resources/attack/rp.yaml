@@ -1,7 +1,9 @@
-attack_rotation:
-  - attack:
-      hotkey: f4
-      cooldown: 4
-  - attack:
-      hotkey: f5
-      cooldown: 2
+attack_config:
+    name: rp
+    attack_rotation:
+    - attack:
+        hotkey: f4
+        cooldown: 4
+    - attack:
+        hotkey: f5
+        cooldown: 2

@@ -9,12 +9,11 @@ class BattleServisce:
 
     @classmethod
     def is_battle_empty(cls):
-        battle_color = RGB(
-            *pyscreeze.pixel(cls.life_border_x, cls.life_border_y))
+        battle_color = RGB(*pyscreeze.pixel(cls.life_border_x, cls.life_border_y))
         if (
-            battle_color.red != cls.not_empty_color.red or
-            battle_color.green != cls.not_empty_color.green or
-            battle_color.blue != cls.not_empty_color.blue
+            battle_color.red != cls.not_empty_color.red
+            or battle_color.green != cls.not_empty_color.green
+            or battle_color.blue != cls.not_empty_color.blue
         ):
             return True
         return False

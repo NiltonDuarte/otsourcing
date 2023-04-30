@@ -10,3 +10,5 @@ creature_icon_pos = (75, 46)
 map_region = (1751, 28, 1858 - 1751, 135 - 28)
 
 map_center = (1806, 83)
+
+life_border_pos = 1594, 55

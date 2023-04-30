@@ -5,7 +5,7 @@ from otsourcing.data_model.attack_rotation import AttackRotation
 from otsourcing.data_model.command_message import (
     ToggleAtkMessage,
 )
-from otsourcing.services.battle import BattleServisce
+from otsourcing.services.battle import BattleService
 from otsourcing.services.hotkeys import HotkeyFunctions
 from otsourcing.services.attack import AttackService
 from otsourcing.settings import user_resources_folder
@@ -49,7 +49,7 @@ class AttackApp(BaseApp):
             if not self.atk_enabled:
                 pyautogui.sleep(1)
                 continue
-            if BattleServisce.is_battle_empty():
+            if BattleService.is_battle_empty():
                 pyautogui.sleep(1)
                 continue
             has_attacked = self.attack_service.attack()

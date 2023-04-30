@@ -4,7 +4,7 @@ import pyscreeze
 from pyscreeze import RGB
 
 from otsourcing.data_model.mana import ManaBar
-from otsourcing.services.battle import BattleServisce
+from otsourcing.services.battle import BattleService
 from otsourcing.gui.window_utils import only_if_window_focused, is_gray
 
 
@@ -29,7 +29,7 @@ class ManaService:
             pyautogui.press(self.pot_mana_key)
             self.timer = time.perf_counter()
             return True, None
-        elif self.pot_until_high_mana and BattleServisce.is_battle_empty():
+        elif self.pot_until_high_mana and BattleService.is_battle_empty():
             mana_bar_color = RGB(
                 *pyscreeze.pixel(self.mana_bar.high_mana_pot_x, self.mana_bar.y)
             )

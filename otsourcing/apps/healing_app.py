@@ -35,13 +35,8 @@ class HealingApp(BaseApp):
     def queue_handler(self):
         hotkey_map = {
             "r": lambda: HotkeyFunctions.pickup_surrouding_loot(self),
-            "s": self.toggle_ssa,
         }
         super()._queue_handler(hotkey_map)
-
-    def toggle_ssa(self):
-        self.health_service.ssa_enable = not self.health_service.ssa_enable
-        self.send_output(f"SSA = {self.health_service.ssa_enable}")
 
     def run(self):
         self.send_output("Initializing healing.")

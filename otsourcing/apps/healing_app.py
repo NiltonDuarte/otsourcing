@@ -23,9 +23,9 @@ class HealingApp(BaseApp):
             user_input = yaml.safe_load(f)
         heal_config = user_input["heal_config"]
         self.send_output(f"Loading config {heal_config['name']}")
-        health_bar = HealthBar(**heal_config["health_bar"])
-        mana_bar = ManaBar(**heal_config["mana_bar"])
-        amulet = Amulet(**heal_config["amulet"])
+        health_bar = HealthBar.load_from_dict(heal_config["health_bar"])
+        mana_bar = ManaBar.load_from_dict(heal_config["mana_bar"])
+        amulet = Amulet.load_from_dict(heal_config["amulet"])
 
         self.health_service = HealService(
             health_bar=health_bar, amulet=amulet, **heal_config["heal_service"]

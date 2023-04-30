@@ -6,7 +6,7 @@ from pyscreeze import RGB
 class Amulet:
     x: int
     y: int
-    ssa_pixel: int = RGB(0xE8, 0xE8, 0xE8)
+    ssa_pixel: int
 
     @classmethod
     def load_from_dict(cls, input_dict):

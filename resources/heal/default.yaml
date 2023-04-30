@@ -7,8 +7,6 @@ heal_config:
     pot_x: 255
     # x position to use healing spell when it is not green
     spell_x: 860
-    # x position to equip ssa when it is not green
-    ssa_x: 710
   mana_bar:
     # y position of the mana bar search pos
     y: 31
@@ -16,20 +14,10 @@ heal_config:
     pot_x: 1300
     # y position to use mana pot when bar is not blue-ish and there is no creature on the battle
     high_mana_pot_x: 950
-  amulet:
-    # amulet slot coordinate do grab pixel
-    x: 1770
-    y: 179
-    # ssa pixel color on that position
-    ssa_pixel: [0xE8, 0xE8, 0xE8]
   heal_service:
     spell_heal_key: f1
     pot_heal_key: f2
-    ssa_key: f6
-    default_amulet_key: f7
-    is_full_ssa: False
     heal_cd: 1
-    ssa_cd: 0.2
   mana_service:
     pot_mana_key: f3
     pot_until_high_mana: True

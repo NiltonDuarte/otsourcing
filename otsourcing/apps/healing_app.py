@@ -13,7 +13,6 @@ from otsourcing.apps.base_app import BaseApp
 
 class HealingApp(BaseApp):
     def __init__(self, *args, **kwargs):
-        self.attack_rotation = None
         self.health_service = None
         self.mana_service = None
         super().__init__(*args, **kwargs)
@@ -25,10 +24,9 @@ class HealingApp(BaseApp):
         self.send_output(f"Loading config {heal_config['name']}")
         health_bar = HealthBar.load_from_dict(heal_config["health_bar"])
         mana_bar = ManaBar.load_from_dict(heal_config["mana_bar"])
-        amulet = Amulet.load_from_dict(heal_config["amulet"])
 
         self.health_service = HealService(
-            health_bar=health_bar, amulet=amulet, **heal_config["heal_service"]
+            health_bar=health_bar, **heal_config["heal_service"]
         )
         self.mana_service = ManaService(
             mana_bar=mana_bar, **heal_config["mana_service"]

@@ -128,6 +128,9 @@ def start_gui(process_pool, ot_sorcing: OtSorcing):
     attack_app = ot_sorcing.attack_app(
         "atk", input_command_queue_attack, output_command_queue
     )
+    ssa_app = ot_sorcing.ssa_app(
+        "ssa", input_command_queue_attack, output_command_queue
+    )
 
     root = tk.Tk()
     frm = tk.ttk.Frame(root, padding=10)
@@ -136,17 +139,21 @@ def start_gui(process_pool, ot_sorcing: OtSorcing):
 
     atk_selected_option = tk.StringVar()
     heal_selected_option = tk.StringVar()
+    ssa_selected_option = tk.StringVar()
     create_atk_selection_menu(frm, atk_selected_option)
     create_heal_selection_menu(frm, heal_selected_option)
+    create_ssa_selection_menu(frm, ssa_selected_option)
 
     create_app_buttons(
         process_pool,
         heal_app,
         cavebot_app,
         attack_app,
+        ssa_app,
         frm,
         atk_selected_option,
         heal_selected_option,
+        ssa_selected_option,
     )
 
     create_toggle_pause_btn(frm, style, input_queues)
@@ -198,14 +205,30 @@ def create_heal_selection_menu(frm, heal_selected_option):
     mbtn["menu"] = menu
 
 
+def create_ssa_selection_menu(frm, ssa_selected_option):
+    ssa_selected_option.set("default")
+    tk.ttk.Label(frm, text="Ssa Setup").grid(column=2, row=3)
+    mbtn = tk.ttk.Menubutton(frm, textvariable=ssa_selected_option)
+    mbtn.grid(column=2, row=4)
+
+    menu = tk.Menu(mbtn, tearoff=0)
+    for p in Path(f"{user_resources_folder}/ssa").iterdir():
+        if p.is_file():
+            name = p.stem
+            menu.add_radiobutton(label=name, value=name, variable=ssa_selected_option)
+    mbtn["menu"] = menu
+
+
 def create_app_buttons(
     process_pool,
     heal_app,
     cavebot_app,
     attack_app,
+    ssa_app,
     frm,
     atk_selected_option,
     heal_selected_option,
+    ssa_selected_option,
 ):
     def start_atk_app():
         attack_app.load_config_from_file(atk_selected_option.get())
@@ -215,14 +238,19 @@ def create_app_buttons(
         heal_app.load_config_from_file(heal_selected_option.get())
         subprocess_run(process_pool, heal_app.run)
 
+    def start_ssa_app():
+        ssa_app.load_config_from_file(ssa_selected_option.get())
+        subprocess_run(process_pool, ssa_app.run)
+
     tk.ttk.Button(
         frm,
         text="Start Heal",
         command=start_heal_app,
     ).grid(column=0, row=0)
     tk.ttk.Button(frm, text="Start Atk", command=start_atk_app).grid(column=1, row=0)
-    tk.ttk.Button(
-        frm,
-        text="Start Cb",
-        command=lambda: subprocess_run(process_pool, cavebot_app.run),
-    ).grid(column=2, row=0)
+    tk.ttk.Button(frm, text="Start Ssa", command=start_ssa_app).grid(column=2, row=0)
+    # tk.ttk.Button(
+    #     frm,
+    #     text="Start Cb",
+    #     command=lambda: subprocess_run(process_pool, cavebot_app.run),
+    # ).grid(column=2, row=0)

@@ -1,0 +1,16 @@
+ssa_config:
+  name: ssa_high_health
+  toggle_hotkey: s
+  amulet:
+    # amulet slot coordinate do grab pixel
+    ssa_pixel_pos: [1770, 179]
+    # ssa pixel color on that position
+    ssa_pixel_color: [0xE8, 0xE8, 0xE8]
+    # health pixel to equip ssa
+    ssa_pixel_health_pos: [710, 34]
+  ssa_service:
+    ssa_key: f6
+    default_amulet_key: f7
+    is_full_ssa: False
+    ssa_cd: 0.2
+

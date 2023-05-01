@@ -2,14 +2,16 @@ import tkinter as tk
 import tkinter.scrolledtext as st
 from datetime import datetime
 from functools import partial
-from queue import Queue, Empty
-from multiprocessing import Manager, Process
+from queue import Empty, Full
+from multiprocessing import Manager, Process, Queue
 from pathlib import Path
+from typing import List
 from pynput import keyboard
 from otsourcing.app import OtSorcing
 from otsourcing.data_model.command_message import CommandType
 from otsourcing.settings import user_resources_folder
 from otsourcing.services.hotkeys import Hotkeys
+from otsourcing.logger import logger
 
 
 def subprocess_run(process_pool, fn):
@@ -62,16 +64,23 @@ def handle_output_command_queue(root, text_area, style, output_command_queue: Qu
 
 
 class MultiQueueBroker:
-    def __init__(self, queues) -> None:
+    def __init__(self, queues: List[Queue]) -> None:
         self.queues = queues
+        self.log = logger
 
     def put(self, *args, **kwargs):
-        for queue in self.queues:
-            queue.put(*args, **kwargs)
+        for index, queue in enumerate(self.queues):
+            try:
+                queue.put(*args, **kwargs)
+            except Full:
+                self.log.warn(f"Queue {index} is full")
 
     def put_nowait(self, *args, **kwargs):
-        for queue in self.queues:
-            queue.put_nowait(*args, **kwargs)
+        for index, queue in enumerate(self.queues):
+            try:
+                queue.put_nowait(*args, **kwargs)
+            except Full:
+                self.log.warn(f"Queue {index} is full")
 
 
 def create_toggle_pause_btn(frm, style, input_queues):
@@ -109,12 +118,14 @@ def start_gui(process_pool, ot_sorcing: OtSorcing):
     input_command_queue_heal = manager.Queue(10)
     input_command_queue_cavebot = manager.Queue(10)
     input_command_queue_attack = manager.Queue(10)
+    input_command_queue_ssa = manager.Queue(10)
     output_command_queue = manager.Queue(10)
     input_queues = MultiQueueBroker(
         [
             input_command_queue_heal,
             input_command_queue_attack,
             input_command_queue_cavebot,
+            input_command_queue_ssa,
         ]
     )
     hotkeys = Hotkeys(input_queues)
@@ -128,9 +139,7 @@ def start_gui(process_pool, ot_sorcing: OtSorcing):
     attack_app = ot_sorcing.attack_app(
         "atk", input_command_queue_attack, output_command_queue
     )
-    ssa_app = ot_sorcing.ssa_app(
-        "ssa", input_command_queue_attack, output_command_queue
-    )
+    ssa_app = ot_sorcing.ssa_app("ssa", input_command_queue_ssa, output_command_queue)
 
     root = tk.Tk()
     frm = tk.ttk.Frame(root, padding=10)

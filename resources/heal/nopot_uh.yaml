@@ -1,5 +1,5 @@
 heal_config:
-  name: pot_low_health_high_health_ssa
+  name: no_pot_health_until_high
   health_bar:
     y: 34
     pot_x: 255

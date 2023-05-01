@@ -1,8 +1,8 @@
 heal_config:
-  name: pot_high_health_low_health_ssa
+  name: pot_low_health
   health_bar:
     y: 34
-    pot_x: 627
+    pot_x: 480
     spell_x: 860
   mana_bar:
     y: 31
@@ -14,5 +14,5 @@ heal_config:
     heal_cd: 1
   mana_service:
     pot_mana_key: f3
-    pot_until_high_mana: True
+    pot_until_high_mana: false
     pot_cd: 1.3

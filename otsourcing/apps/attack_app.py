@@ -5,6 +5,7 @@ from otsourcing.data_model.attack_rotation import AttackRotation
 from otsourcing.data_model.command_message import (
     ToggleAtkMessage,
 )
+from otsourcing.data_model.extra_action import ExtraAction
 from otsourcing.services.battle import BattleService
 from otsourcing.services.hotkeys import HotkeyFunctions
 from otsourcing.services.attack import AttackService
@@ -26,7 +27,11 @@ class AttackApp(BaseApp):
         attack_rotation = AttackRotation.load_from_dict(
             attack_config["attack_rotation"]
         )
-        self.attack_service = AttackService(attack_rotation)
+        extra_actions = []
+        for extra_action_input in attack_config.get("extra_actions", []):
+            extra_action = ExtraAction.load_from_dict(extra_action_input["action"])
+            extra_actions.append(extra_action)
+        self.attack_service = AttackService(attack_rotation, extra_actions)
 
     def toggle_atk(self):
         self.atk_enabled = not self.atk_enabled
@@ -53,4 +58,5 @@ class AttackApp(BaseApp):
                 pyautogui.sleep(1)
                 continue
             has_attacked = self.attack_service.attack()
+            self.attack_service.extra_action()
             pyautogui.sleep(0.1)

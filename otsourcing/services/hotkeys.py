@@ -44,7 +44,7 @@ class HotkeyFunctions:
 
 
 class Hotkeys:
-    listening_keys = ("d", "s")
+    listening_keys = ("d", "s", "r")
 
     def __init__(self, command_queue: Queue) -> None:
         self.command_queue = command_queue

@@ -4,6 +4,7 @@ attack_config:
     - attack:
         hotkey: f4
         cooldown: 6
+        extra_action_hotkey_pre: f8
     - attack:
         hotkey: f5
         cooldown: 4

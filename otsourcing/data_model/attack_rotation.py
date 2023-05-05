@@ -7,12 +7,13 @@ from otsourcing.data_model.attack import AttackSpell
 @dataclass
 class AttackRotation:
     rotation: List[AttackSpell]
-    group_cooldown: int = 2
+    group_cooldown: int = 0
     last_time_used: int = 0
 
     def reset_last_time_used(self, attack_spell: AttackSpell):
         attack_spell.reset_last_time_used()
         self.last_time_used = time.perf_counter()
+        self.group_cooldown = attack_spell.group_cooldown
 
     def is_group_available(self):
         current_timer = time.perf_counter()

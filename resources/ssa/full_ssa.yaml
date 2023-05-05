@@ -1,5 +1,5 @@
 ssa_config:
-  name: ssa_high_health
+  name: full_ssa
   toggle_hotkey: s
   amulet:
     # amulet slot coordinate do grab pixel

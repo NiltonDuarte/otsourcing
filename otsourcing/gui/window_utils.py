@@ -6,7 +6,6 @@ from otsourcing.settings import WINDOW_TITLE_IMG
 
 
 def is_gray(color: RGB, tolerance=10):
-    # print(color)
     return (abs(color.red - color.green) < tolerance) and (
         abs(color.green - color.blue) < tolerance
     )

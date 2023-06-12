@@ -1,5 +1,6 @@
 attack_config:
     name: ek
+    group_cooldown: 2.1
     attack_rotation:
     - attack:
         hotkey: f4
@@ -7,10 +8,11 @@ attack_config:
         extra_action_hotkey_pre: f8
     - attack:
         hotkey: f5
-        cooldown: 4
+        cooldown: 8
     - attack:
         hotkey: f6
-        cooldown: 8
+        cooldown: 4
+        extra_action_hotkey_pre: f9
     - attack:
         hotkey: f7
         cooldown: 2

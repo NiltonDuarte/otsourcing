@@ -1,17 +1,17 @@
 attack_config:
-    name: rp
+    name: ms
     attack_rotation:
     - attack:
         hotkey: f4
-        cooldown: 4
+        cooldown: 8
         extra_action_hotkey_pre: f8
     - attack:
         hotkey: f5
         cooldown: 2
     extra_actions:
     - action:
-        hotkey: f9
-        cooldown: 60
-    - action:
         hotkey: f12
         cooldown: 540
+    - action:
+        hotkey: f9
+        cooldown: 15

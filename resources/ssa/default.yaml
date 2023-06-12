@@ -9,8 +9,8 @@ ssa_config:
     # health pixel to equip ssa
     ssa_pixel_health_pos: [710, 34]
   ssa_service:
-    ssa_key: f6
-    default_amulet_key: f7
+    ssa_key: f10
+    default_amulet_key: f11
     is_full_ssa: false
     ssa_cd: 0.2
 

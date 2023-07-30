@@ -1,7 +1,7 @@
 import pyautogui
 import yaml
+from otsourcing.logger import logger
 from otsourcing.data_model.amulet import Amulet
-from otsourcing.services.hotkeys import HotkeyFunctions
 from otsourcing.services.ssa import SsaService
 from otsourcing.settings import user_resources_folder
 from otsourcing.apps.base_app import BaseApp
@@ -39,6 +39,7 @@ class SsaApp(BaseApp):
         while True:
             self.queue_handler()
             if not self.resumed:
+                logger.debug(f"{self.name} paused.")
                 pyautogui.sleep(1)
                 continue
 

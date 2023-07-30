@@ -1,5 +1,5 @@
 attack_config:
-    name: ek
+    name: ek_boss
     group_cooldown: 2.1
     attack_rotation:
     - attack:
@@ -8,15 +8,7 @@ attack_config:
         extra_action_hotkey_pre: f8
     - attack:
         hotkey: f5
-        cooldown: 8
+        cooldown: 6
     - attack:
         hotkey: f6
         cooldown: 4
-        extra_action_hotkey_pre: f9
-    # - attack:
-    #     hotkey: f7
-    #     cooldown: 2
-    extra_actions:
-    - action:
-        hotkey: f12
-        cooldown: 60

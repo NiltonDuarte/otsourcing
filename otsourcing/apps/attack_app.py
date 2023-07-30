@@ -1,6 +1,7 @@
 from queue import Queue
 import pyautogui
 import yaml
+from otsourcing.logger import logger
 from otsourcing.data_model.attack_rotation import AttackRotation
 from otsourcing.data_model.command_message import (
     ToggleAtkMessage,
@@ -49,6 +50,7 @@ class AttackApp(BaseApp):
         while True:
             self.queue_handler()
             if not self.resumed:
+                logger.debug(f"{self.name} paused.")
                 pyautogui.sleep(1)
                 continue
             if not self.atk_enabled:

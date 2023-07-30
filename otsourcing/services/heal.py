@@ -2,8 +2,8 @@ import time
 import pyautogui
 import pyscreeze
 from pyscreeze import RGB
+from otsourcing.logger import logger
 from otsourcing.data_model.health import HealthBar
-from otsourcing.data_model.amulet import Amulet
 from otsourcing.gui.window_utils import only_if_window_focused, is_gray
 
 
@@ -20,7 +20,17 @@ class HealService:
         self.heal_cd = heal_cd
         self.health_bar = health_bar
 
-        self.spell_timer = time.perf_counter()
+        self._spell_timer = None
+
+    @property
+    def spell_timer(self):
+        if self._spell_timer is None:
+            self._spell_timer = time.perf_counter()
+        return self._spell_timer
+
+    @spell_timer.setter
+    def spell_timer(self, value):
+        self._spell_timer = value
 
     @only_if_window_focused
     def heal(self):
@@ -43,6 +53,10 @@ class HealService:
     def spell_heal(self):
         current_timer = time.perf_counter()
         diff = current_timer - self.spell_timer
+        logger.debug(
+            f"Check CD spell heal {diff > self.heal_cd}: {diff=} {self.heal_cd=}"
+        )
         if diff > self.heal_cd:
+            logger.debug("Spell heal")
             pyautogui.press(self.spell_heal_key)
             self.spell_timer = time.perf_counter()

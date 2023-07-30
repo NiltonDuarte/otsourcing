@@ -2,8 +2,8 @@ heal_config:
   name: pot_high_until_high
   health_bar:
     y: 34
-    pot_x: 840
-    spell_x: 870
+    pot_x: 627
+    spell_x: 860
   mana_bar:
     y: 31
     pot_x: 1100

@@ -1,7 +1,6 @@
 import pyautogui
 import yaml
-from otsourcing.data_model.amulet import Amulet
-from otsourcing.data_model.attack_rotation import AttackRotation
+from otsourcing.logger import logger
 from otsourcing.data_model.health import HealthBar
 from otsourcing.data_model.mana import ManaBar
 from otsourcing.services.hotkeys import HotkeyFunctions
@@ -44,10 +43,12 @@ class HealingApp(BaseApp):
         while True:
             self.queue_handler()
             if not self.resumed:
+                logger.debug(f"{self.name} paused.")
                 pyautogui.sleep(1)
                 continue
 
-            has_healed, message = self.health_service.heal() or (False, None)
+            has_healed, message = self.health_service.heal() or (False, "Not Focused")
+            logger.debug(f"Heal service [{self.name}]: {message}")
             if has_healed and message:
                 self.send_output(message)
             has_filled, message = self.mana_service.fill() or (False, None)

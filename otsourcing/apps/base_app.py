@@ -4,6 +4,7 @@ from otsourcing.data_model.command_message import (
     StringMessage,
     TogglePauseMessage,
 )
+import pyautogui
 from otsourcing.services.hotkeys import HotkeyFunctions
 from otsourcing.logger import logger
 
@@ -15,6 +16,7 @@ class BaseApp:
         self.output_command_queue = output_command_queue
         self.resumed = False
         self.log = logger
+        pyautogui.FAILSAFE = False
 
     def toggle_pause(self):
         self.resumed = not self.resumed

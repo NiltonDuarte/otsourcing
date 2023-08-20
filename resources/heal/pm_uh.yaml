@@ -1,13 +1,13 @@
 heal_config:
-  name: pot_high_until_high
+  name: pot_med_until_high
   health_bar:
     y: 34
     pot_x: 627
-    spell_x: 860
+    spell_x: 800
   mana_bar:
     y: 31
     pot_x: 1100
-    high_mana_pot_x: 950
+    high_mana_pot_x: 1100
   heal_service:
     spell_heal_key: f1
     pot_heal_key: f2

@@ -7,7 +7,7 @@ ssa_config:
     # ssa pixel color on that position
     ssa_pixel_color: [0xE8, 0xE8, 0xE8]
     # health pixel to equip ssa
-    ssa_pixel_health_pos: [670, 34]
+    ssa_pixel_health_pos: [520, 34]
   ssa_service:
     ssa_key: f10
     default_amulet_key: f11

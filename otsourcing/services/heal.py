@@ -48,7 +48,7 @@ class HealService:
         if is_gray(health_bar_spell_color):
             self.spell_heal()
             return True, ""
-        return False, "Life not healed"
+        return False, ""
 
     def spell_heal(self):
         current_timer = time.perf_counter()

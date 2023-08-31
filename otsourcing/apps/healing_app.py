@@ -48,8 +48,8 @@ class HealingApp(BaseApp):
                 continue
 
             has_healed, message = self.health_service.heal() or (False, "Not Focused")
-            logger.debug(f"Heal service [{self.name}]: {message}")
             if has_healed and message:
+                logger.debug(f"Heal service [{self.name}]: {message}")
                 self.send_output(message)
             has_filled, message = self.mana_service.fill() or (False, None)
             if has_filled and message:
